@@ -254,6 +254,77 @@ class Topic {
         return self::save(0, $vars, $errors);
     }
 
+    static function getHelpTopicsTicket($publicOnly=false, $disabled=false) {
+        global $cfg;
+        static $topics, $names;
+        /*custom var*/
+        $niveles = array();
+
+        if (!$names) {
+            $sql = 'SELECT topic_id, topic_pid, ispublic, isactive, topic FROM '.TOPIC_TABLE
+                . ' ORDER BY `sort`';
+            $res = db_query($sql);
+
+            // Fetch information for all topics, in declared sort order
+            $topics = array();
+            while (list($id, $pid, $pub, $act, $topic) = db_fetch_row($res))
+                $topics[$id] = array('id'=>$id,'pid'=>$pid, 'public'=>$pub,
+                    'disabled'=>!$act, 'topic'=>$topic);
+            /*custom var*/
+            $lvlsTotal = 1;
+            
+            // Resolve parent names
+            foreach ($topics as $id=>$info) {
+                /*custom var*/
+                $currentInfo = $info;
+                
+                $name = $info['topic'];
+                $loop = array($id=>true);
+                $parent = false;
+                /*custom code*/
+                $lvls = 0;
+                //if(!$info['pid']){ $niveles[0][] = $info;}
+
+                while ($info['pid'] && ($info = $topics[$info['pid']])) {
+                    $lvls++;
+                    $name = sprintf('%s / %s', $info['topic'], $name);
+                    if ($parent && $parent['disabled'])
+                        // Cascade disabled flag
+                        $topics[$id]['disabled'] = true;
+                    if (isset($loop[$info['pid']]))
+                        break;
+                    $loop[$info['pid']] = true;
+                    $parent = $info;
+                    
+                }
+                
+                /*custom code*/
+                $niveles[$lvls][] = $currentInfo;
+                $lvlsTotal = ($lvlsTotal > $lvls) ? $lvlsTotal : $lvls;
+                $lvls = 0;
+                
+                $names[$id] = $name;
+            }
+        }
+
+        // Apply requested filters
+        $requested_names = array();
+        foreach ($names as $id=>$n) {
+            $info = $topics[$id];
+            if ($publicOnly && !$info['public'])
+                continue;
+            if (!$disabled && $info['disabled'])
+                continue;
+            if ($disabled === self::DISPLAY_DISABLED && $info['disabled'])
+                $n .= " &mdash; (disabled)";
+            $requested_names[$id] = $n;
+        }
+
+        return $niveles;
+        //return $requested_names;
+    }
+
+
     static function getHelpTopics($publicOnly=false, $disabled=false) {
         global $cfg;
         static $topics, $names = array();
