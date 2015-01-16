@@ -1,0 +1,20 @@
+---
+notes: 'Wordt naar een  gebruiker verzonden wanneer een nieuw ticket is aangemaakt'
+subject: 'Support ticket geopend [#%{ticket.number}]'
+body: |
+  <h3><strong>Beste %{recipient.name.first},</strong></h3>
+  <p>
+  Een support verzoek si aangemaakt en heeft #%{ticket.number} toegewezen gekregen.
+  Een medewerker zal dit zo snel mogelijk met u voortzetten. U kunt 
+  <a href="%{recipient.ticket_link}">de voortgang van dit ticket online volgen</a>.
+  </p>
+  <br>
+  <div style="color: rgb(127, 127, 127)">
+  Uw %{company.name} Team,
+  <br>
+  %{signature}
+  </div>
+  <hr>
+  <div style="color: rgb(127, 127, 127); font-size: small; "><em>Als u aanvullende toelichtingen of informatie betreffende deze kwestie wilt geven, antwoord dan a.u.b. op deze email of <a href="%{recipient.ticket_link}"><span
+  style="color: rgb(84, 141, 212);" >login op uw account</span></a> voor
+  een compleet overzicht van uw support verzoeken.</em></div>

@@ -1,0 +1,22 @@
+---
+add_new_agent:
+  title: Nieuwe medewerker toevoegen
+  content: ""
+agents:
+  title: Medewerkers
+  content: ""
+name:
+  title: Naam
+  content: ""
+username:
+  title: Gebruikersnaam
+  content: ""
+status:
+  title: Status
+  content: ""
+created:
+  title: Aangemaakt
+  content: ""
+last_login:
+  title: Laatste login
+  content: ""
