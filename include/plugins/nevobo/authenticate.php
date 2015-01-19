@@ -141,7 +141,7 @@ class NevoboAuthentication
 class StaffNevoboAuthentication extends StaffAuthenticationBackend implements AuthDirectorySearch
 {
     public static $name = "Nevobo authentication";
-    public static $id = "ldap";
+    public static $id = "nevobo";
     private $nevobo;
 
     public function __construct($config)
