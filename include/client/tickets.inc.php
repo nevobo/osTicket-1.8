@@ -24,7 +24,7 @@ if(isset($_REQUEST['status'])) { //Query string status has nothing to do with th
 	$results_type=__('Open Tickets');
 }
 
-$sortOptions=array('id'=>'`number`', 'subject'=>'cdata.subject', 'user' => 'frontenduser.name',
+$sortOptions=array('id'=>'`number`', 'subject'=>'cdata.subject', 'user' => 'frontenduser.name', 'prio' => 'prio.sort',
                     'status'=>'status.name', 'dept'=>'dept_name','date'=>'ticket.created');
 $orderWays=array('DESC'=>'DESC','ASC'=>'ASC');
 //Sorting options...
@@ -45,14 +45,14 @@ $x=$sort.'_sort';
 $$x=' class="'.strtolower($order).'" ';
 
 $qselect='SELECT ticket.ticket_id,ticket.`number`,ticket.dept_id,isanswered, '
-    .'dept.ispublic, cdata.subject, frontenduser.name, '
+    .'dept.ispublic, cdata.subject, frontenduser.name, prio.value, prio.extra, '
     .'dept_name, status.name as status, status.state, ticket.source, ticket.created ';
 
 $qfrom='FROM '.TICKET_TABLE.' ticket '
-      .' LEFT JOIN '.TICKET_STATUS_TABLE.' status
-            ON (status.id = ticket.status_id) '
+      .' LEFT JOIN '.TICKET_STATUS_TABLE.' status ON (status.id = ticket.status_id) '
       .' LEFT JOIN '.TABLE_PREFIX.'user frontenduser ON (frontenduser.id = ticket.user_id)'
       .' LEFT JOIN '.TABLE_PREFIX.'ticket__cdata cdata ON (cdata.ticket_id = ticket.ticket_id)'
+      .' LEFT JOIN '.TABLE_PREFIX.'list_items prio ON (cdata.prioriteit_extern = prio.id)'
       .' LEFT JOIN '.DEPT_TABLE.' dept ON (ticket.dept_id=dept.dept_id) '
       .' LEFT JOIN '.TICKET_COLLABORATOR_TABLE.' collab
         ON (collab.ticket_id = ticket.ticket_id
@@ -170,7 +170,7 @@ $negorder=$order=='DESC'?'ASC':'DESC'; //Negate the sorting
                 <a href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Subject"><?php echo __('Subject');?></a>
             </th>
             <th width="120">
-                <a href="tickets.php?sort=dept&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Department"><?php echo __('Department');?></a>
+                <a href="tickets.php?sort=prio&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Department"><?php echo __('Prioriteit');?></a>
             </th>
         </tr>
     </thead>
@@ -178,9 +178,7 @@ $negorder=$order=='DESC'?'ASC':'DESC'; //Negate the sorting
     <?php
      $subject_field = TicketForm::objects()->one()->getField('subject');
      if($res && ($num=db_num_rows($res))) {
-        $defaultDept=Dept::getDefaultDeptName(); //Default public dept.
         while ($row = db_fetch_array($res)) {
-            $dept= $row['ispublic']? $row['dept_name'] : $defaultDept;
             $subject = Format::truncate($subject_field->display(
                 $subject_field->to_php($row['subject']) ?: $row['subject']
             ), 40);
@@ -204,7 +202,7 @@ $negorder=$order=='DESC'?'ASC':'DESC'; //Negate the sorting
                 <td>
                     <a href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $subject; ?></a>
                 </td>
-                <td><?php echo Format::truncate($dept,30); ?></td>
+                <td><div title="<?php echo $row['value']; ?>"><?php echo $row['extra']; ?></div></td>
             </tr>
         <?php
         }
