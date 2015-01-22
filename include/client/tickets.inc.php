@@ -51,14 +51,21 @@ $qselect='SELECT ticket.ticket_id,ticket.`number`,ticket.dept_id,isanswered, '
 $qfrom='FROM '.TICKET_TABLE.' ticket '
       .' LEFT JOIN '.TICKET_STATUS_TABLE.' status
             ON (status.id = ticket.status_id) '
+      .' LEFT JOIN '.TABLE_PREFIX.'user frontenduser ON (frontenduser.id = ticket.user_id)'
       .' LEFT JOIN '.TABLE_PREFIX.'ticket__cdata cdata ON (cdata.ticket_id = ticket.ticket_id)'
       .' LEFT JOIN '.DEPT_TABLE.' dept ON (ticket.dept_id=dept.dept_id) '
       .' LEFT JOIN '.TICKET_COLLABORATOR_TABLE.' collab
         ON (collab.ticket_id = ticket.ticket_id
                 AND collab.user_id ='.$thisclient->getId().' )';
 
-$qwhere = sprintf(' WHERE ( ticket.user_id=%d OR collab.user_id=%d )',
-            $thisclient->getId(), $thisclient->getId());
+
+if ($_REQUEST['organisation_check'] && $_REQUEST['organisation_check'] = 'on' && $thisclient->getOrgId()) {
+    $qwhere = sprintf(' WHERE ( ticket.user_id=%d OR collab.user_id=%d OR frontenduser.org_id=%d )',
+                $thisclient->getId(), $thisclient->getId(), $thisclient->getOrgId());
+} else {
+    $qwhere = sprintf(' WHERE ( ticket.user_id=%d OR collab.user_id=%d )',
+                      $thisclient->getId(), $thisclient->getId());
+}
 
 $states = array(
         'open' => 'open',
@@ -133,6 +140,12 @@ $negorder=$order=='DESC'?'ASC':'DESC'; //Negate the sorting
         <?php
         } ?>
     </select>
+    <?php if (isset($_REQUEST['organisation_check']) && $_REQUEST['organisation_check'] == 'on'): ?>
+        <input type="checkbox" value="on" name="organisation_check" id="organisation_check" checked="checked"/>
+    <?php else: ?>
+        <input type="checkbox" value="on" name="organisation_check" id="organisation_check"/>
+    <?php endif; ?>
+    <label for="organisation_check">Ook van collega's</label>
     <input type="submit" value="<?php echo __('Go');?>">
 </form>
 <a class="refresh" href="<?php echo Format::htmlchars($_SERVER['REQUEST_URI']); ?>"><?php echo __('Refresh'); ?></a>

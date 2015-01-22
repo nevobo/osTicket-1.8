@@ -37,7 +37,7 @@ if ($thisclient && $thisclient->isGuest()
         // Only ticket owners can edit the ticket details (and other forms)
         && $thisclient->getId() == $ticket->getUserId()) { ?>
                 <a class="action-button pull-right" href="tickets.php?a=edit&id=<?php
-                     echo $ticket->getId(); ?>"><i class="icon-edit"></i> Edit</a>
+                     echo $ticket->getId(); ?>"><i class="icon-edit"></i> <?php echo __('Edit') ?></a>
 <?php } ?>
             </h1>
         </td>

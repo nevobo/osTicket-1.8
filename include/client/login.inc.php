@@ -48,16 +48,27 @@ if (count($ext_bks)) {
 <div class="external-auth"><?php $bk->renderExternalLink(); ?></div><?php
     }
 }
-if ($cfg && $cfg->isClientRegistrationEnabled()) {
+
+// Uitgezet in Nevobo template
+if (false && $cfg && $cfg->isClientRegistrationEnabled()) {
     if (count($ext_bks)) echo '<hr style="width:70%"/>'; ?>
     <div style="margin-bottom: 5px">
     <?php echo __('Not yet registered?'); ?> <a href="account.php?do=create"><?php echo __('Create an account'); ?></a>
     </div>
 <?php } ?>
     <div>
-    <b><?php echo __("I'm an agent"); ?></b> —
-    <a href="<?php echo ROOT_PATH; ?>scp"><?php echo __('sign in here'); ?></a>
+    <b>Ik ben mijn inloggegevens vergeten</b> —
+    <a href="http://www.volleybal.nl/competitie/wachtwoord-vergeten" target="_blank">Opvragen via volleybal.nl</a>
     </div>
+    <div style="max-width: 350px; padding-top: 15px;">
+        Heb je geen account op volleybal.nl? <a href="http://www.volleybal.nl/competitie/aanmelden" target="_blank">Meld
+        je dan aan</a> en zorg er voor dat je hierbij je Nevobo-relatiecode invult in het daarvoor bestemde veld. Je
+        relatiecode staat op je spelerskaart, of is op te vragen bij de ledenadministratie van je vereniging.
+    </div>
+<!--    <div>-->
+<!--    <b>--><?php //echo __("I'm an agent"); ?><!--</b> —-->
+<!--    <a href="--><?php //echo ROOT_PATH; ?><!--scp">--><?php //echo __('sign in here'); ?><!--</a>-->
+<!--    </div>-->
     </div>
 </div>
 </form>

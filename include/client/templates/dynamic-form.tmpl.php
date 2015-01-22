@@ -8,7 +8,7 @@
     <?php print ($form instanceof DynamicFormEntry) 
         ? $form->getForm()->getMedia() : $form->getMedia(); ?>
     <h3><?php echo Format::htmlchars($form->getTitle()); ?></h3>
-    <em><?php echo Format::htmlchars($form->getInstructions()); ?></em>
+    <em><?php echo nl2br(Format::htmlchars($form->getInstructions())); ?></em>
     </div>
     </td></tr>
     <?php

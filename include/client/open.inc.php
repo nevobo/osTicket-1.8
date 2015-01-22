@@ -46,7 +46,7 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                      ?>
                         <div class="combo_div" style="margin-bottom:5px;">
                             <select class="cmb" id="cmb<?php echo $i; ?>" style="float:none; width:300px;<?php if($i >0) echo 'display:none;';?>" name="topic<?php echo $i; ?>" >
-                                <option value="" >Select an option</option>
+                                <option value="" >Maak een keuze</option>
                    <?php  
                        
                     
@@ -65,13 +65,11 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                     <?php
                 }
             } else { ?>
-                No Help Topics Available
+                Geen onderwerpen beschikbaar
             <?php
             } ?>
                 
-                <div>
-                    <font class="error">*&nbsp;<?php echo $errors['topicId']; ?></font>
-                </div>
+                <div class="error">*&nbsp;<?php echo $errors['topicId']; ?></div>
 
         </td>
     </tr>
