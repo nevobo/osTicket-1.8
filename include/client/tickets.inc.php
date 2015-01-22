@@ -24,7 +24,7 @@ if(isset($_REQUEST['status'])) { //Query string status has nothing to do with th
 	$results_type=__('Open Tickets');
 }
 
-$sortOptions=array('id'=>'`number`', 'subject'=>'cdata.subject',
+$sortOptions=array('id'=>'`number`', 'subject'=>'cdata.subject', 'user' => 'frontenduser.name',
                     'status'=>'status.name', 'dept'=>'dept_name','date'=>'ticket.created');
 $orderWays=array('DESC'=>'DESC','ASC'=>'ASC');
 //Sorting options...
@@ -45,7 +45,7 @@ $x=$sort.'_sort';
 $$x=' class="'.strtolower($order).'" ';
 
 $qselect='SELECT ticket.ticket_id,ticket.`number`,ticket.dept_id,isanswered, '
-    .'dept.ispublic, cdata.subject,'
+    .'dept.ispublic, cdata.subject, frontenduser.name, '
     .'dept_name, status.name as status, status.state, ticket.source, ticket.created ';
 
 $qfrom='FROM '.TICKET_TABLE.' ticket '
@@ -59,7 +59,8 @@ $qfrom='FROM '.TICKET_TABLE.' ticket '
                 AND collab.user_id ='.$thisclient->getId().' )';
 
 
-if ($_REQUEST['organisation_check'] && $_REQUEST['organisation_check'] = 'on' && $thisclient->getOrgId()) {
+if ($_REQUEST['organisation_check'] && $_REQUEST['organisation_check'] && $thisclient->getOrgId()) {
+    $qs += array('organisation_check' => $_REQUEST['organisation_check']);
     $qwhere = sprintf(' WHERE ( ticket.user_id=%d OR collab.user_id=%d OR frontenduser.org_id=%d )',
                 $thisclient->getId(), $thisclient->getId(), $thisclient->getOrgId());
 } else {
@@ -140,7 +141,7 @@ $negorder=$order=='DESC'?'ASC':'DESC'; //Negate the sorting
         <?php
         } ?>
     </select>
-    <?php if (isset($_REQUEST['organisation_check']) && $_REQUEST['organisation_check'] == 'on'): ?>
+    <?php if (isset($_REQUEST['organisation_check']) && $_REQUEST['organisation_check']): ?>
         <input type="checkbox" value="on" name="organisation_check" id="organisation_check" checked="checked"/>
     <?php else: ?>
         <input type="checkbox" value="on" name="organisation_check" id="organisation_check"/>
@@ -156,8 +157,11 @@ $negorder=$order=='DESC'?'ASC':'DESC'; //Negate the sorting
             <th nowrap>
                 <a href="tickets.php?sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Ticket ID"><?php echo __('Ticket #');?></a>
             </th>
+            <th nowrap>
+                <a href="tickets.php?sort=user&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Username"><?php echo __('User');?></a>
+            </th>
             <th width="120">
-                <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Date"><?php echo __('Create Date');?></a>
+                <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Date"><?php echo __('Date');?></a>
             </th>
             <th width="100">
                 <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><?php echo __('Status');?></a>
@@ -194,12 +198,13 @@ $negorder=$order=='DESC'?'ASC':'DESC'; //Negate the sorting
                 <a class="Icon <?php echo strtolower($row['source']); ?>Ticket" title="<?php echo $row['email']; ?>"
                     href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $ticketNumber; ?></a>
                 </td>
-                <td>&nbsp;<?php echo Format::db_date($row['created']); ?></td>
-                <td>&nbsp;<?php echo $row['status']; ?></td>
+                <td><?php echo $row['name']; ?></td>
+                <td><?php echo Format::db_date($row['created']); ?></td>
+                <td><?php echo $row['status']; ?></td>
                 <td>
                     <a href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $subject; ?></a>
                 </td>
-                <td>&nbsp;<?php echo Format::truncate($dept,30); ?></td>
+                <td><?php echo Format::truncate($dept,30); ?></td>
             </tr>
         <?php
         }
