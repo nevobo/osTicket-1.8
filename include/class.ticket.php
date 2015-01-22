@@ -202,6 +202,10 @@ class Ticket {
         if ($user->getId() == $this->getUserId())
             return true;
 
+        // Own organisation
+        if ($user->getOrgId() == $this->getUser()->getOrgId())
+            return true;
+
         //Collaborator?
         // 1) If the user was authorized via this ticket.
         if ($user->getTicketId() == $this->getId()
