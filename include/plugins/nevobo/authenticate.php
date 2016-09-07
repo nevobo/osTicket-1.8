@@ -2,12 +2,19 @@
 
 require_once INCLUDE_DIR.'class.auth.php';
 
+/**
+ * Class NevoboAuthentication
+ */
 class NevoboAuthentication
 {
     private $config;
     private $type = 'staff';
     private $pdoconn;
 
+    /**
+     * @param        $config
+     * @param string $type
+     */
     public function __construct($config, $type = 'staff')
     {
         $this->config = $config;
@@ -20,15 +27,27 @@ class NevoboAuthentication
         );
     }
 
+    /**
+     * @param      $username
+     * @param null $password
+     *
+     * @return array|ClientCreateRequest|ClientSession|false
+     */
     public function authenticate($username, $password = null)
     {
         if (!$password) {
-            return;
+            return false;
         }
 
         return $this->login($username, $password);
     }
 
+    /**
+     * @param $username
+     * @param $password
+     *
+     * @return array|ClientCreateRequest|ClientSession|false
+     */
     private function login($username, $password) {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_POST, 1);
@@ -41,7 +60,7 @@ class NevoboAuthentication
             $this->config->get('rest_gebruikersnaam') . ":" . $this->config->get('rest_wachtwoord')
         );
 
-        curl_setopt($curl, CURLOPT_URL, 'http://api.deploy.nevobo.nl/rest/mavie/sessions');
+        curl_setopt($curl, CURLOPT_URL, 'https://api.nevobo.nl/rest/mavie/sessions');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
         $result = curl_exec($curl);
@@ -49,7 +68,7 @@ class NevoboAuthentication
 
         $result = json_decode($result);
         if (isset($result->error)) {
-            return;
+            return false;
         }
 
         $output = array(
@@ -75,7 +94,7 @@ class NevoboAuthentication
                 $client = new ClientSession(new EndUser($account->getUser()));
 
                 if (!$client || !$client->getId()) {
-                    return;
+                    return false;
                 }
 
                 return $client;
@@ -84,6 +103,11 @@ class NevoboAuthentication
         return $output;
     }
 
+    /**
+     * @param $query
+     *
+     * @return array
+     */
     public function search($query)
     {
         $sql = "SELECT * 
@@ -115,6 +139,12 @@ class NevoboAuthentication
         return $users;
     }
 
+    /**
+     * @param $username
+     * @param $dn
+     *
+     * @return StaffSession
+     */
     public function lookupAndSync($username, $dn)
     {
         switch ($this->type) {
@@ -125,77 +155,112 @@ class NevoboAuthentication
                 break;
             case 'client':
                 $info = array(
-                    'username' => $username,
-                    'first' => $first,
-                    'last' => $last,
-                    'name' => $name,
-                    'email' => $this->_getValue($e, $schema['email']),
-                    'phone' => $this->_getValue($e, $schema['phone']),
-                    'mobile' => $this->_getValue($e, $schema['mobile'])
+                    'username' => $username
+//                    'first' => $first,
+//                    'last' => $last,
+//                    'name' => $name,
+//                    'email' => $this->_getValue($e, $schema['email']),
+//                    'phone' => $this->_getValue($e, $schema['phone']),
+//                    'mobile' => $this->_getValue($e, $schema['mobile'])
                 );
 
         }
+        return false;
     }
 }
 
+/**
+ * Class StaffNevoboAuthentication
+ */
 class StaffNevoboAuthentication extends StaffAuthenticationBackend implements AuthDirectorySearch
 {
     public static $name = "Nevobo authentication";
     public static $id = "nevobo";
     private $nevobo;
 
+    /**
+     * @param $config
+     */
     public function __construct($config)
     {
         $this->nevobo = new NevoboAuthentication($config, 'staff');
     }
 
+    /**
+     * @param       $username
+     * @param bool  $password
+     * @param array $errors
+     *
+     * @return array|ClientCreateRequest|ClientSession|false
+     */
     public function authenticate($username, $password = false, $errors = array())
     {
         return $this->nevobo->authenticate($username, $password);
     }
 
+    /**
+     * @param $search
+     *
+     * @return array
+     */
     public function lookup($search)
     {
         return array(
-            'username' => $username,
-            'first' => $first,
-            'last' => $last,
-            'name' => $name,
-            'email' => $this->_getValue($e, $schema['email']),
-            'phone' => $this->_getValue($e, $schema['phone']),
-            'mobile' => $this->_getValue($e, $schema['mobile']),
+//            'username' => $username,
+//            'first' => $first,
+//            'last' => $last,
+//            'name' => $name,
+//            'email' => $this->_getValue($e, $schema['email']),
+//            'phone' => $this->_getValue($e, $schema['phone']),
+//            'mobile' => $this->_getValue($e, $schema['mobile']),
         );
     }
 
+    /**
+     * @param $query
+     */
     public function search($query)
     {
-        if (strlen($query) < 3) {
-            return array();
-        }
-
-        return array(array(
-            'username' => $username,
-            'first' => $first,
-            'last' => $last,
-            'name' => $name,
-            'email' => $this->_getValue($e, $schema['email']),
-            'phone' => $this->_getValue($e, $schema['phone']),
-            'mobile' => $this->_getValue($e, $schema['mobile']),
-        ));
+//        if (strlen($query) < 3) {
+//            return array();
+//        }
+//
+//        return array(array(
+//            'username' => $username,
+//            'first' => $first,
+//            'last' => $last,
+//            'name' => $name,
+//            'email' => $this->_getValue($e, $schema['email']),
+//            'phone' => $this->_getValue($e, $schema['phone']),
+//            'mobile' => $this->_getValue($e, $schema['mobile']),
+//        ));
     }
 }
 
+/**
+ * Class ClientNevoboAuthentication
+ */
 class ClientNevoboAuthentication extends UserAuthenticationBackend
 {
     public static $name = "Nevobo authentication";
     public static $id = "nevobo.client";
     private $nevobo;
 
+    /**
+     * @param $config
+     */
     public function __construct($config)
     {
         $this->nevobo = new NevoboAuthentication($config, 'client');
     }
 
+    /**
+     * @param       $username
+     * @param bool  $password
+     * @param array $errors
+     *
+     * @return array|ClientCreateRequest|ClientSession|void
+     */
     public function authenticate($username, $password = false, $errors = array())
     {
         $object = $this->nevobo->authenticate($username, $password);
@@ -210,6 +275,10 @@ class ClientNevoboAuthentication extends UserAuthenticationBackend
 
 require_once INCLUDE_DIR.'class.plugin.php';
 require_once 'config.php';
+
+/**
+ * Class NevoboAuthPlugin
+ */
 class NevoboAuthPlugin extends Plugin
 {
     var $config_class = 'NevoboConfig';

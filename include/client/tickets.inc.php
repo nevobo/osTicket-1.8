@@ -52,7 +52,7 @@ $qfrom='FROM '.TICKET_TABLE.' ticket '
       .' LEFT JOIN '.TICKET_STATUS_TABLE.' status ON (status.id = ticket.status_id) '
       .' LEFT JOIN '.TABLE_PREFIX.'user frontenduser ON (frontenduser.id = ticket.user_id)'
       .' LEFT JOIN '.TABLE_PREFIX.'ticket__cdata cdata ON (cdata.ticket_id = ticket.ticket_id)'
-      .' LEFT JOIN '.TABLE_PREFIX.'list_items prio ON (cdata.prioriteit_extern = prio.id)'
+      .' LEFT JOIN '.TABLE_PREFIX.'list_items prio ON (cdata.prioriteit_extern = prio.id AND prio.list_id = 3)'
       .' LEFT JOIN '.DEPT_TABLE.' dept ON (ticket.dept_id=dept.dept_id) '
       .' LEFT JOIN '.TICKET_COLLABORATOR_TABLE.' collab
         ON (collab.ticket_id = ticket.ticket_id

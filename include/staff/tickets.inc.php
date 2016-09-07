@@ -356,7 +356,7 @@ if ($results) {
  <input type="hidden" name="do" id="action" value="" >
  <input type="hidden" name="status" value="<?php echo
  Format::htmlchars($_REQUEST['status'], true); ?>" >
- <table class="list" border="0" cellspacing="1" cellpadding="2" width="940">
+ <table class="list" border="0" cellspacing="1" cellpadding="2">
     <thead>
         <tr>
             <?php if($thisstaff->canManageTickets()) { ?>
@@ -368,24 +368,26 @@ if ($results) {
 	        <th width="70">
                 <a  <?php echo $date_sort; ?> href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Date'), __($negorder)); ?>"><?php echo __('Date'); ?></a></th>
-	        <th width="280">
+	        <th>
                  <a <?php echo $subj_sort; ?> href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                     title="<?php echo sprintf(__('Sort by %s %s'), __('Subject'), __($negorder)); ?>"><?php echo __('Subject'); ?></a></th>
             <th width="170">
                 <a <?php echo $name_sort; ?> href="tickets.php?sort=name&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                      title="<?php echo sprintf(__('Sort by %s %s'), __('Name'), __($negorder)); ?>"><?php echo __('From');?></a></th>
             <?php
-            if($search && !$status) { ?>
-                <th width="60">
+//            if($search && !$status) {
+                ?>
+                <th>
                     <a <?php echo $status_sort; ?> href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Status'), __($negorder)); ?>"><?php echo __('Status');?></a></th>
             <?php
-            } else { ?>
-                <th width="60" <?php echo $pri_sort;?>>
+//            } else {
+                ?>
+                <th <?php echo $pri_sort;?>>
                     <a <?php echo $pri_sort; ?> href="tickets.php?sort=pri&order=<?php echo $negorder; ?><?php echo $qstr; ?>"
                         title="<?php echo sprintf(__('Sort by %s %s'), __('Priority'), __($negorder)); ?>"><?php echo __('Priority');?></a></th>
             <?php
-            }
+//            }
 
             if($showassigned ) {
                 //Closed by
@@ -437,9 +439,7 @@ if ($results) {
                 }
                 $tid=$row['number'];
 
-                $subject = Format::truncate($subject_field->display(
-                    $subject_field->to_php($row['subject']) ?: $row['subject']
-                ), 40);
+                $subject = $subject_field->display( $subject_field->to_php($row['subject']) ?: $row['subject']);
                 $threadcount=$row['thread_count'];
                 if(!strcasecmp($row['state'],'open') && !$row['isanswered'] && !$row['lock_id']) {
                     $tid=sprintf('<b>%s</b>',$tid);
@@ -477,16 +477,17 @@ if ($results) {
                 <td nowrap>&nbsp;<?php echo Format::htmlchars(
                         Format::truncate($row['name'], 22, strpos($row['name'], '@'))); ?>&nbsp;</td>
                 <?php
-                if($search && !$status){
+//                if($search && !$status){
                     $displaystatus=ucfirst($row['status']);
                     if(!strcasecmp($row['state'],'open'))
                         $displaystatus="<b>$displaystatus</b>";
                     echo "<td>$displaystatus</td>";
-                } else { ?>
+//                } else {
+            ?>
                 <td class="nohover" align="center" style="background-color:<?php echo $row['priority_color']; ?>;">
                     <?php echo $row['priority_desc']; ?></td>
                 <?php
-                }
+//                }
                 ?>
                 <td nowrap>&nbsp;<?php echo $lc; ?></td>
             </tr>

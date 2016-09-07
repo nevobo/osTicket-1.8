@@ -62,13 +62,6 @@
   background: #ff0;
   color: #000;
 }
-.thread-body code,
-.thread-body kbd,
-.thread-body pre,
-.thread-body samp {
-  font-family: monospace, serif;
-  font-size: 1em;
-}
 .thread-body pre {
   white-space: pre-wrap;
 }
@@ -401,9 +394,9 @@
  * a more normal font. Other <pre> elements in the ticket thread body should
  * be shown with the ususal monospace font
  */
-.thread-body > div > pre:first-child {
-    font-family: sans-serif;
-}
+//.thread-body > div > pre:first-child {
+//    font-family: sans-serif;
+//}
 
 /* Avoid extra padding at the bottom of the thread body element */
 .thread-body :last-child,
@@ -420,9 +413,9 @@
 	margin: 0;
 	margin-bottom: 10px;
 	border: none;
-	background: none !important;
-	box-shadow: none !important;
-    text-indent: 0 !important;
+	background: none;
+	box-shadow: none;
+    text-indent: 0;
 }
 
 .thread-body iframe,
@@ -508,3 +501,13 @@ p.MsoNormal, li.MsoNormal, div.MsoNormal,
 p.MsoPlainText, li.MsoPlainText, div.MsoPlainText
     {margin:0cm;
     margin-bottom:.0001pt;}
+
+.thread-body code,
+.thread-body kbd,
+.thread-body pre,
+.thread-body samp {
+  font-family: monospace, serif;
+  font-size: 11px;
+  line-height: 12px;
+  background-color: #eeeeee;
+}

@@ -1143,6 +1143,7 @@ class Ticket {
         global $cfg;
 
         db_query('UPDATE '.TICKET_TABLE.' SET isanswered=0,lastmessage=NOW() WHERE ticket_id='.db_input($this->getId()));
+        db_query('UPDATE '.TICKET_TABLE.' SET status_id=13 WHERE ticket_id='.db_input($this->getId()).' AND status_id=8');
 
         // Auto-assign to closing staff or last respondent
         // If the ticket is closed and auto-claim is not enabled then put the
